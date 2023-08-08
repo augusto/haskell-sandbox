@@ -1,0 +1,72 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.35.1.
+--
+-- see: https://github.com/sol/hpack
+
+name:           99problems
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/99problems#readme>
+homepage:       https://github.com/githubuser/99problems#readme
+bug-reports:    https://github.com/githubuser/99problems/issues
+author:         Author name here
+maintainer:     example@example.com
+copyright:      2023 Author name here
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    CHANGELOG.md
+
+source-repository head
+  type: git
+  location: https://github.com/githubuser/99problems
+
+library
+  exposed-modules:
+      Lib
+      Problems01
+      Problems11
+      Problems21
+      Problems31
+      Problems41
+  other-modules:
+      Paths_99problems
+  hs-source-dirs:
+      src
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
+  build-depends:
+      base >=4.7 && <5
+    , containers
+    , random
+  default-language: Haskell2010
+
+executable 99problems-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_99problems
+  hs-source-dirs:
+      app
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      99problems
+    , base >=4.7 && <5
+    , containers
+    , random
+  default-language: Haskell2010
+
+test-suite 99problems-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_99problems
+  hs-source-dirs:
+      test
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      99problems
+    , base >=4.7 && <5
+    , containers
+    , random
+  default-language: Haskell2010
