@@ -1,4 +1,5 @@
-{-# LANGUAGE  ImportQualifiedPost #-}
+{-# LANGUAGE ImportQualifiedPost #-}
+
 module Problems21 where
 
 import Data.Functor ((<&>))
@@ -6,7 +7,6 @@ import Data.IntSet qualified as IS (IntSet, delete, fromDistinctAscList, size, t
 import Data.List (sortOn)
 import Data.List qualified as L (nub, tails, (\\))
 import System.Random (Random (randomRs), newStdGen, randomRIO)
-
 
 -- problem 21
 --

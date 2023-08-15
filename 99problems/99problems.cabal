@@ -31,6 +31,7 @@ library
       Problems21
       Problems31
       Problems41
+      Problems51
   other-modules:
       Paths_99problems
   hs-source-dirs:
@@ -39,6 +40,7 @@ library
   build-depends:
       base >=4.7 && <5
     , containers
+    , heap
     , random
   default-language: Haskell2010
 
@@ -53,6 +55,7 @@ executable 99problems-exe
       99problems
     , base >=4.7 && <5
     , containers
+    , heap
     , random
   default-language: Haskell2010
 
@@ -68,5 +71,6 @@ test-suite 99problems-test
       99problems
     , base >=4.7 && <5
     , containers
+    , heap
     , random
   default-language: Haskell2010

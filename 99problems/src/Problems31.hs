@@ -1,9 +1,9 @@
 module Problems31
-  ( goldbach
+  ( goldbach,
   )
 where
 
-import Data.List
+import Data.List (group)
 
 -- problem 31
 -- λ> isPrime 7
