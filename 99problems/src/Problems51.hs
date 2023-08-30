@@ -1,7 +1,29 @@
-module Problems51 where
+module Problems51(
+  Tree(Empty,Branch),
+  depth,
+  treeSize,
+  leaf,
+  pt
+) where
 
 data Tree a = Empty | Branch a (Tree a) (Tree a)
   deriving (Show, Eq)
+
+-- Some utilities
+
+depth :: Tree a -> Int
+depth Empty = 0
+depth (Branch _ l r) = 1 + max (depth l) (depth r)
+
+treeSize :: Tree a -> Int
+treeSize Empty = 0
+treeSize (Branch _ l r) = 1 + treeSize l + treeSize r
+
+leaf :: a -> Tree a
+leaf x = Branch x Empty Empty
+
+pt :: Show a => [Tree a] -> IO ()
+pt = putStrLn . unlines . map show
 
 -- No problem 51-54
 
@@ -12,11 +34,17 @@ data Tree a = Empty | Branch a (Tree a) (Tree a)
 -- [...]
 cbalTree :: Int -> [Tree Char]
 cbalTree 0 = [Empty]
-cbalTree n =
-  [ Branch 'x' left right | l <- [next .. next + mod], left <- cbalTree l, right <- cbalTree (n - l - 1)
-  ]
+cbalTree n = cbalTree' n 'x'
+
+cbalTree' :: Int -> a -> [Tree a]
+cbalTree' 0 _ = [Empty]
+cbalTree' n x = [Branch x left right | l <- [next .. next + mod], left <- cbalTree' l x, right <- cbalTree' (n - l - 1) x]
   where
     (next, mod) = (n - 1) `divMod` 2
+
+-- or another approach using later functions
+cbalTree2 :: Int -> [Tree Char]
+cbalTree2 n = [t | t <- genTree n, isCbal t]
 
 -- Problem 56
 -- Symmetric binary trees.
@@ -57,7 +85,7 @@ symmetric (Branch _ l r) = symmetric' l r
 -- Node: No idea what chapter 4 is, but it looks like it's just to create an 'add' function that
 -- takes an Int and inserts/adds it to a tree.
 add :: Int -> Tree Int -> Tree Int
-add n Empty = Branch n Empty Empty
+add n Empty = leaf n
 add n (Branch e lt rt)
   | n < e = Branch e (add n lt) rt
   | e < n = Branch e lt (add n rt)
@@ -77,6 +105,7 @@ construct = foldl (flip add) Empty
 --
 --
 symCbalTrees n = [t | t <- cbalTree n, symmetric t]
+
 symCbalTrees'' = filter symmetric . cbalTree
 
 -- Implementation that builds all possible trees with n nodes and then filters
@@ -101,19 +130,67 @@ isCbal = snd . isCbal'
 symCbalTrees' :: Int -> [Tree Char]
 symCbalTrees' n = [t | t <- genTree n, isCbal t && symmetric t]
 
-
 -- Problem 59
--- Construct height-balanced binary trees. 
+-- Construct height-balanced binary trees.
 --
--- In a height-balanced binary tree, the following property holds for every node: 
+-- In a height-balanced binary tree, the following property holds for every node:
 -- The height of its left subtree and the height of its right subtree are almost
 -- equal, which means their difference is not greater than one.
 --
 -- Construct a list of all height-balanced binary trees with the given element
--- and the given maximum height. 
+-- and the given maximum height.
 --
 -- λ> take 4 $ hbalTree 'x' 3
 -- [Branch 'x' (Branch 'x' Empty Empty) (Branch 'x' Empty (Branch 'x' Empty Empty)),
 --  Branch 'x' (Branch 'x' Empty Empty) (Branch 'x' (Branch 'x' Empty Empty) Empty),
 --  Branch 'x' (Branch 'x' Empty Empty) (Branch 'x' (Branch 'x' Empty Empty) (Branch 'x' Empty Empty)),
 --  Branch 'x' (Branch 'x' Empty (Branch 'x' Empty Empty)) (Branch 'x' Empty Empty)]
+
+hbalTree :: a -> Int -> [Tree a]
+hbalTree _ 0 = [Empty]
+hbalTree x 1 = [leaf x]
+hbalTree x n =
+  let depths = [(n - 1, n - 2), (n - 2, n - 1), (n - 1, n - 1)]
+   in [Branch x lb rb | (ld, rd) <- depths, lb <- hbalTree x ld, rb <- hbalTree x rd]
+
+
+-- Problem 60
+-- Construct height-balanced binary trees with a given number of nodes. 
+--
+-- Consider a height-balanced binary tree of height H. What is the maximum
+--  number of nodes it can contain?
+-- 
+-- Clearly, MaxN = 2H - 1. However, what is the minimum number MinN? This
+--  question is more difficult. Try to find a recursive statement and turn
+--  it into a function minNodes that returns the minimum number of nodes in
+--  a height-balanced binary tree of height H.
+-- 
+-- On the other hand, we might ask: what is the maximum height H a height-balanced
+--  binary tree with N nodes can have? Write a function maxHeight that computes this.
+-- 
+-- Now, we can attack the main problem: construct all the height-balanced binary
+--  trees with a given number of nodes. Find out how many height-balanced trees
+--  exist for N = 15. 
+--
+-- λ> length $ hbalTreeNodes 'x' 15
+-- 1553
+-- λ> map (hbalTreeNodes 'x') [0..3]
+-- [[Empty],
+-- [Branch 'x' Empty Empty],
+-- [Branch 'x' Empty (Branch 'x' Empty Empty),Branch 'x' (Branch 'x' Empty Empty) Empty],
+-- [Branch 'x' (Branch 'x' Empty Empty) (Branch 'x' Empty Empty)]]
+maxN :: Int -> Int
+maxN h = 2^h - 1
+
+minN :: Int -> Int
+minN 0 = 0
+minN 1 = 1
+minN h = 1 + minN (h-1) + minN (h-2)
+
+hbalTreeNodes :: a -> Int -> [Tree a]
+hbalTreeNodes _ 0 = [Empty]
+hbalTreeNodes x 1 = [leaf x]
+hbalTreeNodes x n = let minNodes = minN (n-1)
+                        maxNodes = maxN 
+                    in undefined
+                    
